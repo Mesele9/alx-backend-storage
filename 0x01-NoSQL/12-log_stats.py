@@ -18,9 +18,10 @@ print("{} logs".format(total_logs))
 
 # count the number of document for each method
 methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+print("Methods:")
 for method in methods:
     count = collection.count_documents({"method": method})
-    print("method {}: {}".format(method, count))
+    print("    method {}: {}".format(method, count))
 
 # count the number of document with method=GET and path=/status
 status_check = collection.count_documents({"method": "GET", "path": "/status"})
