@@ -24,6 +24,22 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
+def replay(method: Callable):
+    """ function to display the history of calls for a function"""
+    inputs_key = "{}:inputs".format(method.__qualname__)
+    outputs_key = "{}:outputs".format(method.__qualname__)
+
+    inputs = method._redis.lrange(inputs_key, 0, -1)
+    outputs = method._redis.lrange(outputs_key, 0, -1)
+
+    print("{} was called {} times".format(method.__qualname__, len(inputs)))
+
+    for inp, out in xip(inputs, outputs):
+        inp_str = inp.decode("utf-8")
+        out_str = out.decode("utf-8")
+        print("{}(*{}) -> {}".format(method.__qualname__, inp_str, out_str))
+
+
 class Cache:
     """ """
 
