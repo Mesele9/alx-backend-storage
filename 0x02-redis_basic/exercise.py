@@ -24,13 +24,13 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
-def replay(method: Callable):
+def replay(cache_instance: "Cache", method: Callable):
     """ function to display the history of calls for a function"""
     inputs_key = "{}:inputs".format(method.__qualname__)
     outputs_key = "{}:outputs".format(method.__qualname__)
 
-    inputs = method._redis.lrange(inputs_key, 0, -1)
-    outputs = method._redis.lrange(outputs_key, 0, -1)
+    inputs = cache_instance._redis.lrange(inputs_key, 0, -1)
+    outputs = cache_instance._redis.lrange(outputs_key, 0, -1)
 
     print("{} was called {} times".format(method.__qualname__, len(inputs)))
 
