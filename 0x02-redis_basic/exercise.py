@@ -34,7 +34,7 @@ def replay(method: Callable):
 
     print("{} was called {} times".format(method.__qualname__, len(inputs)))
 
-    for inp, out in xip(inputs, outputs):
+    for inp, out in zip(inputs, outputs):
         inp_str = inp.decode("utf-8")
         out_str = out.decode("utf-8")
         print("{}(*{}) -> {}".format(method.__qualname__, inp_str, out_str))
