@@ -3,6 +3,7 @@
 import redis
 import uuid
 from typing import Union, Callable
+import functools
 
 
 class Cache:
@@ -18,7 +19,8 @@ class Cache:
         self._redis.set(key, data)
         return key
 
-    def get(self, key: str, fn: Callable = None) -> Union[str, bytes, int, None]:
+    def get(self, key: str, fn: Callable = None) -> Union[str,
+                                                          bytes, int, None]:
         data = self._redis.get(key)
         if data is None:
             return None
@@ -32,3 +34,17 @@ class Cache:
     def get_int(self, key: str) -> int:
         return self.get(key, fn=int)
 
+
+def count_calls(method: Callable) -> Callable:
+    """ Decorator to count """
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        key = method.__qualname__
+        self._redis.incr(key)
+        return method(self, *args, **kwargs)
+
+    return wrapper
+
+
+# decorate the Cache.store method with count_calls
+Cache.store = count_calls(Cache.store)
